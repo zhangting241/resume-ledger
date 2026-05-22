@@ -1,0 +1,282 @@
+[
+  {
+    "id": 1,
+    "name": "赵振江",
+    "age": "31",
+    "education": "本科",
+    "work_experiences": [
+      {
+        "period": "2017.8-2019.10",
+        "company": "就职大连星海湾壹号项目客服部，任品质管理助理",
+        "position": "专员一职；"
+      },
+      {
+        "period": "2019.11-2023.6",
+        "company": "甘井子万达小米之家和罗斯福小米之家担",
+        "position": "副店和店长"
+      },
+      {
+        "period": "2024.4-2025.3",
+        "company": "甲A写字楼的物业",
+        "position": "运营工作，配合招商完成租户入住及日常报修"
+      }
+    ],
+    "phone": "13998244416",
+    "email": "954828087@qq.coom",
+    "filename": "增值-赵振江（商业方向）.pdf",
+    "filepath": "C:\\Users\\zhangting241\\Desktop\\简历台账\\增值-赵振江（商业方向）.pdf",
+    "hash": "f0ec4a1b4aab8d65d31171e355a3707f",
+    "add_time": "2026-05-21 16:24:29",
+    "category": "优秀储备"
+  },
+  {
+    "id": 2,
+    "name": "于卓成",
+    "age": "29",
+    "education": "大专",
+    "work_experiences": [
+      {
+        "period": "2024.11-至今",
+        "company": "润加物业服务(深圳)有限公司",
+        "position": "物业经理"
+      },
+      {
+        "period": "2021.04-2023.08",
+        "company": "大连西太平洋石油化工有限公司 安全管理",
+        "position": "(消防中控员)"
+      },
+      {
+        "period": "2019.09-2024.09",
+        "company": "大连亚太消防工程有限公司",
+        "position": "消防中控员"
+      }
+    ],
+    "phone": "13941790935",
+    "email": "1255741402@qq.com",
+    "filename": "于卓成_29岁_安全业务经理主管职能平台秩序方向_大连_智联简历_73801.pdf",
+    "filepath": "C:\\Users\\zhangting241\\Desktop\\简历台账\\于卓成_29岁_安全业务经理主管职能平台秩序方向_大连_智联简历_73801.pdf",
+    "hash": "12321c289b84d3a9938c502add65f90f",
+    "add_time": "2026-05-21 16:24:30"
+  },
+  {
+    "id": 3,
+    "name": "侯斯林",
+    "age": "31",
+    "education": "本科",
+    "work_experiences": [
+      {
+        "period": "2022.07-至今",
+        "company": "华润万象生活 EHS主管",
+        "position": "(环境/健康/安全工程师（EHS）)"
+      },
+      {
+        "period": "2017.07-2022.07",
+        "company": "中铁电气化局集团有限公司 项目安质部部长",
+        "position": "(施工安全员)"
+      }
+    ],
+    "phone": "",
+    "email": "",
+    "filename": "安全（平台）侯斯林_31岁 不考虑202601.pdf",
+    "filepath": "C:\\Users\\zhangting241\\Desktop\\简历台账\\安全（平台）侯斯林_31岁 不考虑202601.pdf",
+    "hash": "2c86d6826a258ba39d2b19444508213f",
+    "add_time": "2026-05-21 16:24:30"
+  },
+  {
+    "id": 4,
+    "name": "李锦阳",
+    "age": "38",
+    "education": "本科",
+    "work_experiences": [
+      {
+        "period": "2019.10-至今",
+        "company": "华润大连公司",
+        "position": "建筑机电工程师"
+      },
+      {
+        "period": "2014.01-2019.10",
+        "company": "中建安装集团有限公司 项目总工程师",
+        "position": "(总工程师/副总工程师)"
+      },
+      {
+        "period": "2011.07-2013.12",
+        "company": "胜利油田胜机石油装备有限公司 设计师",
+        "position": "(工业设计)"
+      }
+    ],
+    "phone": "",
+    "email": "",
+    "filename": "工程（平台）李锦阳_38岁，不考虑202601.pdf",
+    "filepath": "C:\\Users\\zhangting241\\Desktop\\简历台账\\工程（平台）李锦阳_38岁，不考虑202601.pdf",
+    "hash": "93377d2d35474c363c17d52ca8ff11b7",
+    "add_time": "2026-05-21 16:24:30"
+  },
+  {
+    "id": 5,
+    "name": "张永明",
+    "age": "39",
+    "education": "大专",
+    "work_experiences": [
+      {
+        "period": "2024.10-至今",
+        "company": "华润万象生活 消防中控",
+        "position": "(消防中控员)"
+      },
+      {
+        "period": "2021.11-2024.09",
+        "company": "新城吾悦商业管理有限公司 工程",
+        "position": "(物业工程经理)"
+      },
+      {
+        "period": "2019.07-2021.11",
+        "company": "大连绿城装饰工程有限公司 技工瓦匠",
+        "position": "(瓦工)"
+      }
+    ],
+    "phone": "",
+    "email": "",
+    "filename": "工程-张永明_39岁 不看.pdf",
+    "filepath": "C:\\Users\\zhangting241\\Desktop\\简历台账\\工程-张永明_39岁 不看.pdf",
+    "hash": "f58252854f09943741f9403efd16ca86",
+    "add_time": "2026-05-21 16:24:30"
+  },
+  {
+    "id": 6,
+    "name": "王哲石",
+    "age": "30",
+    "education": "本科",
+    "work_experiences": [
+      {
+        "period": "2025.05-至今",
+        "company": "润佳物业服务（沈阳）有限公司 秩序专业经理",
+        "position": "(保安经理)"
+      },
+      {
+        "period": "2022.09-2025.05",
+        "company": "重庆华宇第一太平戴维斯物业服务集团有限公司 业务支持负责人(秩序、保洁、绿化)",
+        "position": "(保安经"
+      },
+      {
+        "period": "2018.07-2022.09",
+        "company": "幸福基业物业服务有限公司 安全专业经理",
+        "position": "(保安经理)"
+      }
+    ],
+    "phone": "",
+    "email": "",
+    "filename": "王哲石_30岁_龙湖集团物业安全专家，沈阳.pdf",
+    "filepath": "C:\\Users\\zhangting241\\Desktop\\简历台账\\王哲石_30岁_龙湖集团物业安全专家，沈阳.pdf",
+    "hash": "b9a5e7ef0dbf20be0521c57fd5c7c1f2",
+    "add_time": "2026-05-21 16:24:31"
+  },
+  {
+    "id": 7,
+    "name": "闫爽飞",
+    "age": "35",
+    "education": "硕士研究生",
+    "work_experiences": [
+      {
+        "period": "2021.06-至今",
+        "company": "华润置地大连有限公司",
+        "position": "暖通工程师"
+      },
+      {
+        "period": "2021.04-2021.06",
+        "company": "保利发展（大连）有限公司",
+        "position": "房地产项目配套工程师"
+      },
+      {
+        "period": "2020.10-2021.05",
+        "company": "富力集团大连有限公司 水暖主管",
+        "position": "(暖通工程师)"
+      },
+      {
+        "period": "2019.07-2020.10",
+        "company": "佳兆业地产（大连）有限公司 高级水暖工程师",
+        "position": "(房地产项目配套工程师)"
+      },
+      {
+        "period": "2013.07-2019.07",
+        "company": "亿达建设集团有限公司 水暖工程师",
+        "position": "(给排水工程师)"
+      }
+    ],
+    "phone": "18524115430",
+    "email": "",
+    "filename": "闫爽飞_35岁_平台工程.pdf",
+    "filepath": "C:\\Users\\zhangting241\\Desktop\\简历台账\\闫爽飞_35岁_平台工程.pdf",
+    "hash": "b73d324452311f2d2b8ef61a561cdbb0",
+    "add_time": "2026-05-21 16:24:31"
+  },
+  {
+    "id": 8,
+    "name": "张益一",
+    "age": "27",
+    "education": "本科",
+    "work_experiences": [
+      {
+        "period": "2025.04-至今",
+        "company": "爱迪特（秦皇岛）科技股份有限公司",
+        "position": "供应商/采购质量管理"
+      },
+      {
+        "period": "2021.11-至今",
+        "company": "万物云空间科技服务股份有限公司",
+        "position": "采购经理/主管"
+      },
+      {
+        "period": "2023.01-2025.04",
+        "company": "商写采购BP：",
+        "position": "未识别"
+      },
+      {
+        "period": "2021.11-2022.12",
+        "company": "商写采购",
+        "position": "专员："
+      },
+      {
+        "period": "2020.07-2021.11",
+        "company": "万科企业股份有限公司",
+        "position": "招聘专员/助理"
+      },
+      {
+        "period": "2021.05-2021.11",
+        "company": "招聘专员：",
+        "position": "未识别"
+      },
+      {
+        "period": "2020.07-2020.03",
+        "company": "后勤及员工关系：负责长白片区400余机电",
+        "position": "安全员工客诉闭环、工装维修用"
+      }
+    ],
+    "phone": "15640231735",
+    "email": "",
+    "filename": "张益一_27岁_供应链采购经理主管_大连_智联简历_43704.pdf",
+    "hash": "bdcadf01ffe5477c68065369a1aa5c5f",
+    "add_time": "2026-05-21 16:35:42"
+  },
+  {
+    "id": 9,
+    "name": "冯诗尧",
+    "age": "26",
+    "education": "本科",
+    "work_experiences": [
+      {
+        "period": "2021.07-至今",
+        "company": "万物云空间科技服务股份有限公司",
+        "position": "物业客服经理"
+      },
+      {
+        "period": "2021.07-至今",
+        "company": "大连万科物业服务有限公司",
+        "position": "物业管理员"
+      }
+    ],
+    "phone": "",
+    "email": "",
+    "filename": "冯诗尧_26岁_物业客服经理中山区商业_大连_智联简历_27018.pdf",
+    "hash": "673cd0ca15329183c0fb96fc18b90a86",
+    "add_time": "2026-05-21 17:26:30"
+  }
+]

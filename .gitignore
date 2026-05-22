@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+uploads/
+dist/
+build/
+*.spec
+*.bat
+tunnel.py
+get_url.py
+launcher.py
+public_url.txt
+.vscode/
+.idea/
