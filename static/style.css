@@ -43,6 +43,11 @@ header {
     color: #999;
 }
 
+.header-center {
+    display: flex;
+    align-items: center;
+}
+
 .header-right {
     display: flex;
     align-items: center;
@@ -398,7 +403,52 @@ thead th {
     font-weight: 600;
     color: #666;
     white-space: nowrap;
+    position: relative;
+    overflow: visible;
 }
+
+/* 列宽拖拽手柄 */
+.resize-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: col-resize;
+    z-index: 10;
+    background: transparent;
+    transition: background 0.15s;
+}
+
+.resize-handle:hover,
+.resize-handle:active {
+    background: #4a6cf7;
+    opacity: 0.4;
+}
+
+thead th.resizable .resize-handle::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 2px;
+    background: #e0e0e0;
+    border-radius: 1px;
+}
+
+thead th.resizable .resize-handle:hover::after {
+    background: #4a6cf7;
+}
+
+/* 默认列宽 (仅当 table-layout:fixed 时生效，由 JS 动态切换) */
+thead th:nth-child(1) { width: 60px; }
+thead th:nth-child(2) { width: 80px; }
+thead th:nth-child(3) { width: 90px; }
+thead th:nth-child(4) { width: 70px; }
+thead th:nth-child(5) { width: 100px; }
+thead th:nth-child(6) { width: 120px; }
+thead th:nth-child(8) { width: 200px; }
 
 tbody td {
     padding: 14px 12px;
@@ -440,6 +490,380 @@ tbody tr:last-child td {
 
 .cell-actions {
     white-space: nowrap;
+}
+
+.cell-note {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.6;
+    max-width: 200px;
+    position: relative;
+    padding-right: 30px;
+}
+
+.note-cell {
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 4px;
+    border: 1px dashed transparent;
+    transition: all 0.15s;
+    word-break: break-all;
+    min-height: 24px;
+}
+
+.note-cell:not(.editing):hover {
+    background: #f0f5ff;
+    border-color: #4a6cf7;
+}
+
+.note-empty {
+    color: #bbb;
+    font-style: italic;
+}
+
+/* ==================== 内联编辑 ==================== */
+.editable {
+    cursor: pointer;
+    display: inline-block;
+    padding: 2px 4px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    position: relative;
+}
+
+.editable:not(.editing):hover {
+    background: #f0f5ff;
+    border-color: #b3d4ff;
+}
+
+.editable.editing {
+    border-color: transparent;
+    background: transparent;
+    padding: 0;
+}
+
+.inline-edit-input {
+    padding: 4px 8px;
+    border: 2px solid #4a6cf7;
+    border-radius: 4px;
+    font-size: inherit;
+    font-family: inherit;
+    outline: none;
+    min-width: 40px;
+    box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.15);
+}
+
+.inline-edit-input:focus {
+    border-color: #4a6cf7;
+}
+
+.inline-edit-textarea {
+    width: 100%;
+    padding: 6px 8px;
+    border: 2px solid #4a6cf7;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+    resize: vertical;
+    outline: none;
+    min-height: 60px;
+    box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.15);
+}
+
+/* 可编辑的 select 下拉 */
+.editable select.inline-edit-input {
+    padding: 4px 4px;
+    cursor: pointer;
+}
+
+/* 工作经历编辑链接 */
+.work-edit-link {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 4px 12px;
+    color: #4a6cf7;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid #4a6cf7;
+    border-radius: 4px;
+    cursor: pointer;
+    background: #fff;
+    user-select: none;
+    transition: all 0.15s;
+}
+
+.work-edit-link:hover {
+    background: #4a6cf7;
+    color: #fff;
+}
+
+/* ==================== Tab 导航 ==================== */
+.tab-nav {
+    display: flex;
+    gap: 0;
+    background: #f0f2f5;
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.tab-btn {
+    padding: 8px 20px;
+    border: none;
+    background: transparent;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover { color: #4a6cf7; }
+
+.tab-btn.active {
+    background: #fff;
+    color: #4a6cf7;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    font-weight: 600;
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ==================== 高级筛选栏 ==================== */
+.filter-age {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.filter-age input {
+    width: 72px;
+    padding: 6px 8px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 13px;
+    text-align: center;
+    transition: border-color 0.2s;
+}
+.filter-age input:focus { outline: none; border-color: #4a6cf7; }
+.age-sep { color: #999; font-size: 13px; }
+
+.btn-filter-reset {
+    color: #999;
+    border-color: #e8e8e8;
+    white-space: nowrap;
+}
+.btn-filter-reset:hover { color: #4a6cf7; border-color: #4a6cf7; }
+
+/* 匹配结果栏 */
+.match-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #e6f7ff;
+    border: 1px solid #91d5ff;
+    border-radius: 8px;
+    padding: 8px 16px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #096dd9;
+}
+.match-bar strong { font-size: 18px; margin: 0 4px; }
+
+/* 预设筛选标签 */
+.preset-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+.preset-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #f0f5ff;
+    border: 1px solid #b3d4ff;
+    border-radius: 14px;
+    padding: 3px 8px 3px 10px;
+    font-size: 12px;
+}
+.preset-name { cursor: pointer; color: #4a6cf7; }
+.preset-name:hover { text-decoration: underline; }
+.preset-close { cursor: pointer; color: #999; font-size: 14px; }
+.preset-close:hover { color: #ff4d4f; }
+
+/* ==================== 卡片增强 ==================== */
+.card-meta {
+    font-size: 12px;
+    color: #888;
+    margin: 4px 0;
+}
+
+.card-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+}
+
+.skill-tag {
+    display: inline-block;
+    padding: 1px 8px;
+    background: #f0f5ff;
+    color: #4a6cf7;
+    border: 1px solid #d6e4ff;
+    border-radius: 10px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.skill-tag:hover { background: #ffccc7; color: #ff4d4f; border-color: #ffccc7; }
+
+/* 技能标签编辑态 */
+.skills-input-wrapper {
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    padding: 6px 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+    min-height: 36px;
+    transition: border-color 0.2s;
+}
+.skills-input-wrapper:focus-within { border-color: #4a6cf7; }
+.skills-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.skill-tag-edit {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px 8px;
+    background: #f0f5ff;
+    color: #4a6cf7;
+    border: 1px solid #d6e4ff;
+    border-radius: 10px;
+    font-size: 12px;
+}
+.skill-tag-remove { cursor: pointer; font-size: 14px; color: #999; margin-left: 2px; }
+.skill-tag-remove:hover { color: #ff4d4f; }
+.skills-text-input {
+    border: none;
+    outline: none;
+    flex: 1;
+    min-width: 100px;
+    font-size: 13px;
+    padding: 2px 4px;
+}
+
+/* 表单行三列 */
+.form-row-3 {
+    display: flex;
+    gap: 12px;
+}
+.form-row-3 .form-group { flex: 1; }
+
+.label-hint { font-weight: 400; color: #999; font-size: 12px; }
+
+/* ==================== 数据看板 ==================== */
+/* 统计卡片行 */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: box-shadow 0.2s;
+}
+.stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+
+.stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.stat-info { display: flex; flex-direction: column; }
+.stat-value { font-size: 32px; font-weight: 700; color: #1a1a2e; line-height: 1.1; }
+.stat-label { font-size: 13px; color: #999; margin-top: 4px; }
+
+/* 图表卡片 */
+.charts-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.chart-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    flex: 1;
+    min-width: 0;
+}
+.chart-card-half { flex: 1; }
+
+.chart-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* 交叉表 */
+.cross-table-wrapper { overflow-x: auto; }
+.cross-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.cross-table thead th {
+    background: #fafbfc;
+    padding: 10px 12px;
+    text-align: center;
+    font-weight: 600;
+    color: #666;
+    border-bottom: 2px solid #e8e8e8;
+}
+.cross-table thead th:first-child { text-align: left; }
+.cross-table tbody td {
+    padding: 10px 12px;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+}
+.cross-table tbody td:first-child { text-align: left; font-weight: 500; }
+.cross-label { color: #333; }
+.cross-num { color: #666; }
+.cross-total { font-weight: 700; color: #4a6cf7; }
+
+/* ==================== 弹窗 textarea ==================== */
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.2s;
+}
+
+.form-group textarea:focus {
+    outline: none;
+    border-color: #4a6cf7;
 }
 
 /* ==================== 工作经历 ==================== */
@@ -540,6 +964,103 @@ tbody tr:last-child td {
     background: #fff2f0;
     color: #ff4d4f;
     border: 1px solid #ffccc7;
+}
+
+/* 岗位标签 */
+.tag-position-platform {
+    background: #e6f7ff;
+    color: #096dd9;
+    border: 1px solid #91d5ff;
+}
+.tag-position-pm {
+    background: #f9f0ff;
+    color: #722ed1;
+    border: 1px solid #d3adf7;
+}
+.tag-position-support {
+    background: #e6fffb;
+    color: #08979c;
+    border: 1px solid #87e8de;
+}
+.tag-position-security {
+    background: #fff7e6;
+    color: #d46b08;
+    border: 1px solid #ffd591;
+}
+.tag-position-engineer {
+    background: #f6ffed;
+    color: #389e0d;
+    border: 1px solid #b7eb8f;
+}
+.tag-position-housekeeper {
+    background: #fff0f6;
+    color: #c41d7f;
+    border: 1px solid #ffadd2;
+}
+
+/* 卡片头部标签容器 */
+.card-header-tags {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* ==================== 岗位选择弹窗 ==================== */
+.position-modal {
+    max-width: 520px;
+}
+
+.pos-hint {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.pos-hint strong {
+    color: #4a6cf7;
+    font-size: 18px;
+}
+
+.pos-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.pos-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border: 2px solid #e8e8e8;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fff;
+}
+
+.pos-option:hover {
+    border-color: #4a6cf7;
+    background: #f0f5ff;
+}
+
+.pos-option.selected {
+    border-color: #4a6cf7;
+    background: #eef2ff;
+    box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.15);
+}
+
+.pos-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.pos-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
 }
 
 /* ==================== 空状态 ==================== */
@@ -741,11 +1262,220 @@ footer {
     justify-content: center;
 }
 
+/* ==================== 卡片列表 ==================== */
+.card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.card-list .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.resume-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 16px 20px;
+    position: relative;
+    transition: box-shadow 0.2s;
+}
+
+.resume-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.card-body {
+    display: flex;
+    gap: 24px;
+    min-height: 0;
+}
+
+.card-left {
+    flex: 0 0 300px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.card-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4a6cf7, #7c5cfc);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.card-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+
+.card-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.card-age {
+    font-size: 13px;
+    color: #666;
+}
+
+.card-edu {
+    font-size: 13px;
+}
+
+.card-contact {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.card-contact .sep {
+    color: #ccc;
+    margin: 0 2px;
+}
+
+.card-right {
+    flex: 1;
+    min-width: 0;
+    border-left: 1px solid #f0f0f0;
+    padding-left: 20px;
+    position: relative;
+}
+
+/* 时间线 */
+.timeline {
+    position: relative;
+    padding-left: 16px;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: #e0e0e0;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -16px;
+    top: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #d0d5dd;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #d0d5dd;
+}
+
+.timeline-dot.active {
+    background: #4a6cf7;
+    box-shadow: 0 0 0 1px #4a6cf7;
+}
+
+.timeline-content {
+    font-size: 13px;
+    line-height: 1.6;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    align-items: center;
+}
+
+.timeline-period {
+    color: #999;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.timeline-company {
+    color: #4a6cf7;
+    font-weight: 500;
+}
+
+.timeline-position {
+    color: #666;
+}
+
+.card-footer {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f5f5f5;
+    font-size: 13px;
+    color: #555;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.note-preview {
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px dashed transparent;
+    transition: all 0.15s;
+    display: inline-block;
+    flex: 1;
+    min-width: 0;
+    word-break: break-all;
+}
+
+.note-preview:not(.editing):hover {
+    background: #f0f5ff;
+    border-color: #b3d4ff;
+}
+
 /* ==================== 响应式 ==================== */
 @media (max-width: 768px) {
-    .container {
-        padding: 10px;
-    }
+    .container { padding: 10px; }
 
     header {
         flex-direction: column;
@@ -753,23 +1483,40 @@ footer {
         align-items: flex-start;
     }
 
-    .header-right {
-        flex-wrap: wrap;
-    }
+    .header-center { width: 100%; }
+    .tab-nav { width: 100%; }
+    .tab-btn { flex: 1; text-align: center; }
 
-    .drop-zone-row {
-        flex-direction: column;
-    }
+    .header-right { flex-wrap: wrap; }
 
-    .table-wrapper {
-        overflow-x: auto;
-    }
+    .drop-zone-row { flex-direction: column; }
 
     .toolbar {
         flex-direction: column;
+        flex-wrap: wrap;
+    }
+    .filter-age { width: 100%; }
+    .filter-age input { flex: 1; }
+
+    .search-box { max-width: 100%; }
+
+    .card-body {
+        flex-direction: column;
+        gap: 16px;
     }
 
-    .search-box {
-        max-width: 100%;
+    .card-left { flex: none; width: 100%; }
+    .card-right {
+        border-left: none;
+        padding-left: 0;
+        border-top: 1px solid #f0f0f0;
+        padding-top: 16px;
     }
+
+    .card-footer { flex-direction: column; align-items: flex-start; }
+
+    /* 看板响应式 */
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .charts-row { flex-direction: column; }
+    .form-row-3 { flex-direction: column; }
 }

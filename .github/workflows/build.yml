@@ -1,0 +1,96 @@
+name: 双平台构建
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-13]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 安装依赖
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: 创建占位数据文件
+        shell: bash
+        run: echo "[]" > data.json
+
+      - name: PyInstaller 打包
+        run: pyinstaller build.spec
+
+      - name: macOS 打包 DMG
+        if: runner.os == 'macOS'
+        run: |
+          hdiutil create \
+            -volname "招聘台账" \
+            -srcfolder "dist/招聘台账.app" \
+            -ov -format UDZO \
+            "dist/招聘台账-$(git describe --tags --always).dmg"
+          ls -lh dist/
+
+      - name: 上传构建产物 (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: resume-ledger-windows
+          path: dist/招聘台账.exe
+
+      - name: 上传构建产物 (macOS)
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: resume-ledger-macos
+          path: dist/招聘台账*.dmg
+
+  release:
+    name: 发布 Release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 下载所有构建产物
+        uses: actions/download-artifact@v4
+
+      - name: 创建 GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "招聘台账 ${{ github.ref_name }}"
+          body: |
+            ## 安装说明
+
+            - **Windows**: 下载 `.exe` 文件，双击运行
+            - **macOS**: 下载 `.dmg` 文件，打开后将「招聘台账」拖入 Applications
+            - 首次启动可能需要等待几秒钟
+            - 数据保存在程序同目录下的 `data.json` 中
+
+            ## 功能
+            - 拖拽上传简历（PDF/Word/TXT），自动解析
+            - 岗位分类 + 质量分类 + 技能标签
+            - 多维度筛选匹配
+            - 数据看板（岗位分布、学历分布、城市分布等）
+          generate_release_notes: true
+          files: |
+            resume-ledger-windows/招聘台账.exe
+            resume-ledger-macos/招聘台账*.dmg

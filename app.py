@@ -23,6 +23,7 @@ if sys.platform == "win32":
 BASE_DIR = Path(__file__).parent
 DATA_FILE = BASE_DIR / "data.json"
 UPLOAD_DIR = BASE_DIR / "uploads"
+DEBUG_DIR = BASE_DIR / "debug"
 
 # 确保上传临时目录存在
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -30,6 +31,14 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 # Flask 上传大小限制（50MB）
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024
+
+
+@app.after_request
+def add_no_cache_headers(response):
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 ALLOWED_EXTENSIONS = {".pdf", ".docx", ".doc", ".txt"}
 
@@ -43,10 +52,66 @@ def load_data() -> list:
     if DATA_FILE.exists():
         try:
             with open(DATA_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
+                data = json.load(f)
+            return data
         except:
             pass
     return []
+
+
+def save_data(data: list):
+    """保存台账数据"""
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def migrate_data():
+    """存量数据迁移：为旧记录补充 gender/city/skills 字段，尝试从 debug 文件回填"""
+    data = load_data()
+    if not data:
+        return
+
+    modified = False
+    for item in data:
+        needs_gender = "gender" not in item
+        needs_city = "city" not in item
+        needs_skills = "skills" not in item
+
+        if not (needs_gender or needs_city or needs_skills):
+            continue
+
+        # 补充默认值
+        if needs_gender:
+            item["gender"] = ""
+        if needs_city:
+            item["city"] = ""
+        if needs_skills:
+            item["skills"] = []
+
+        # 尝试从 debug 文本文件回填 gender 和 city
+        filename = item.get("filename", "")
+        debug_file = DEBUG_DIR / f"{filename}.txt"
+        if debug_file.exists() and (needs_gender or needs_city):
+            try:
+                with open(debug_file, "r", encoding="utf-8") as f:
+                    debug_text = f.read()
+                from resume_parser import _extract_gender, _extract_city
+                if needs_gender:
+                    g = _extract_gender(debug_text)
+                    if g:
+                        item["gender"] = g
+                if needs_city:
+                    c = _extract_city(debug_text)
+                    if c:
+                        item["city"] = c
+            except Exception:
+                pass
+
+        modified = True
+
+    if modified:
+        save_data(data)
+        print(f"[MIGRATE] 已为 {len(data)} 条记录补充新字段")
 
 
 def save_data(data: list):
@@ -60,7 +125,7 @@ def bytes_hash(data: bytes) -> str:
     return hashlib.md5(data).hexdigest()
 
 
-def process_resume_bytes(filename: str, content: bytes, category: str = "") -> dict:
+def process_resume_bytes(filename: str, content: bytes, category: str = "", position: str = "") -> dict:
     """
     处理上传的简历文件（字节数据），返回结果或 None。
     会自动保存临时文件 → 解析 → 去重入库 → 清理临时文件。
@@ -82,6 +147,7 @@ def process_resume_bytes(filename: str, content: bytes, category: str = "") -> d
 
     # 保存临时文件用于解析
     tmp_path = None
+    keep_file = False  # 失败时保留文件供调试
     try:
         with tempfile.NamedTemporaryFile(
             suffix=ext, dir=str(UPLOAD_DIR), delete=False
@@ -93,19 +159,26 @@ def process_resume_bytes(filename: str, content: bytes, category: str = "") -> d
         print(f"[PROCESS] 解析: {filename}")
         result = parse_resume(tmp_path)
         if not result:
-            print(f"[SKIP] 无法解析: {filename}")
+            print(f"[SKIP] 无法解析: {filename}，临时文件: {tmp_path}")
+            print(f"        可用命令测试: python resume_parser.py {tmp_path}")
+            keep_file = True  # 保留文件供调试
             return None
 
         # 构建台账条目
         entry = {
             "id": len(data) + 1,
             "category": category or "",
+            "position": position or "",
             "name": result.get("name", "未知"),
             "age": result.get("age", "未知"),
+            "gender": result.get("gender", ""),
             "education": result.get("education", "未知"),
+            "city": result.get("city", ""),
             "work_experiences": result.get("work_experiences", []),
             "phone": result.get("phone", ""),
             "email": result.get("email", ""),
+            "skills": [],
+            "note": "",  # 沟通记录
             "filename": filename,
             "hash": fhash,
             "add_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -118,10 +191,13 @@ def process_resume_bytes(filename: str, content: bytes, category: str = "") -> d
 
     except Exception as e:
         print(f"[ERROR] 解析失败 {filename}: {e}")
+        import traceback
+        traceback.print_exc()
+        keep_file = True
         return None
     finally:
-        # 清理临时文件
-        if tmp_path and os.path.exists(tmp_path):
+        # 清理临时文件（调试模式保留失败文件）
+        if tmp_path and os.path.exists(tmp_path) and not keep_file:
             try:
                 os.remove(tmp_path)
             except:
@@ -155,8 +231,9 @@ def api_upload():
     if not files:
         return jsonify({"status": "error", "message": "未选择文件"}), 400
 
-    # 从表单中获取分类
+    # 从表单中获取分类和岗位
     category = request.form.get("category", "")
+    position = request.form.get("position", "")
 
     results = []
     for file in files:
@@ -176,7 +253,7 @@ def api_upload():
             })
             continue
 
-        r = process_resume_bytes(filename, content, category)
+        r = process_resume_bytes(filename, content, category, position)
         if r is None:
             results.append({
                 "filename": filename,
@@ -210,18 +287,16 @@ def api_edit(entry_id):
     """手动编辑某条记录"""
     data = load_data()
     body = request.get_json()
+    editable_fields = [
+        "name", "age", "gender", "education", "city",
+        "category", "position", "phone", "email", "skills", "note",
+        "work_experiences",
+    ]
     for item in data:
         if item["id"] == entry_id:
-            if "name" in body:
-                item["name"] = body["name"]
-            if "age" in body:
-                item["age"] = body["age"]
-            if "education" in body:
-                item["education"] = body["education"]
-            if "work_experiences" in body:
-                item["work_experiences"] = body["work_experiences"]
-            if "category" in body:
-                item["category"] = body["category"]
+            for field in editable_fields:
+                if field in body:
+                    item[field] = body[field]
             break
     save_data(data)
     return jsonify({"status": "ok"})
@@ -394,6 +469,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="招聘台账")
     parser.add_argument("--host", default="0.0.0.0")
     parser.add_argument("--port", type=int, default=None)
+    parser.add_argument("--no-tunnel", action="store_true", help="跳过内网穿透")
     args = parser.parse_args()
 
     # 云端部署：优先使用环境变量 $PORT
@@ -401,12 +477,17 @@ if __name__ == "__main__":
     is_cloud = bool(os.environ.get("RENDER") or os.environ.get("PORT"))
 
     print("=" * 50)
-    print("  招聘台账系统  v2.3")
+    print("  招聘台账系统  v2.4")
     print("  拖拽上传简历，自动识别")
     print("=" * 50)
 
+    # 存量数据迁移
+    migrate_data()
+
     if is_cloud:
         print(f"\n[WEB] 云端模式，端口: {port}")
+    elif args.no_tunnel:
+        print("\n[WEB] 跳过内网穿透（--no-tunnel）")
     else:
         # 本地启动：尝试内网穿透
         PUBLIC_URL, _tunnel_info = start_tunnel(port)
