@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-13]
+        os: [windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -25,19 +25,33 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: 安装依赖
+      - name: 安装依赖 (Windows)
+        if: runner.os == 'Windows'
         shell: bash
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install pyinstaller
 
+      - name: 安装依赖 (macOS x86_64)
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          arch -x86_64 pip install --upgrade pip
+          arch -x86_64 pip install -r requirements.txt
+          arch -x86_64 pip install pyinstaller
+
       - name: 创建占位数据文件
         shell: bash
         run: echo "[]" > data.json
 
-      - name: PyInstaller 打包
+      - name: PyInstaller 打包 (Windows)
+        if: runner.os == 'Windows'
         run: pyinstaller build.spec
+
+      - name: PyInstaller 打包 (macOS x86_64)
+        if: runner.os == 'macOS'
+        run: arch -x86_64 pyinstaller build.spec
 
       - name: macOS 打包 DMG
         if: runner.os == 'macOS'
