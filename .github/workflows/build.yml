@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest]
+        os: [windows-latest, macos-13]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -25,10 +25,6 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: 安装 Rosetta 2 (macOS)
-        if: runner.os == 'macOS'
-        run: softwareupdate --install-rosetta --agree-to-license || true
-
       - name: 安装依赖
         shell: bash
         run: |
@@ -40,13 +36,8 @@ jobs:
         shell: bash
         run: echo "[]" > data.json
 
-      - name: PyInstaller 打包 (Windows)
-        if: runner.os == 'Windows'
+      - name: PyInstaller 打包
         run: pyinstaller build.spec
-
-      - name: PyInstaller 打包 (macOS x86_64)
-        if: runner.os == 'macOS'
-        run: arch -x86_64 pyinstaller build.spec
 
       - name: macOS 打包 DMG
         if: runner.os == 'macOS'
