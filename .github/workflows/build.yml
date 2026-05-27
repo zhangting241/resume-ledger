@@ -41,31 +41,28 @@ jobs:
           path: dist/招聘台账.exe
 
   build-macos:
-    name: macOS
+    name: macOS (Intel)
     runs-on: macos-latest
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
 
-      - name: 安装 x86_64 Python
-        run: |
-          curl -o python.pkg https://www.python.org/ftp/python/3.11.11/python-3.11.11-macos11.pkg
-          sudo installer -pkg python.pkg -target /
-          export PATH="/Library/Frameworks/Python.framework/Versions/3.11/bin:$PATH"
-          echo "PATH=/Library/Frameworks/Python.framework/Versions/3.11/bin:$PATH" >> $GITHUB_ENV
-          arch -x86_64 python3.11 --version
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
       - name: 安装依赖 (x86_64)
         run: |
-          arch -x86_64 pip3.11 install --upgrade pip
-          arch -x86_64 pip3.11 install -r requirements.txt
-          arch -x86_64 pip3.11 install pyinstaller
+          arch -x86_64 python3 -m pip install --upgrade pip
+          arch -x86_64 python3 -m pip install -r requirements.txt
+          arch -x86_64 python3 -m pip install pyinstaller
 
       - name: 创建占位数据文件
         run: echo "[]" > data.json
 
       - name: PyInstaller 打包 (x86_64)
-        run: arch -x86_64 pyinstaller build.spec
+        run: arch -x86_64 python3 -m PyInstaller build.spec
 
       - name: macOS 打包 DMG
         run: |
